@@ -1,57 +1,56 @@
  /*
- ×÷Õß: XuBin&&Jason
- ÓÊÏä: 190662513@qq.com
- Î¬»¤: 2014.3.8
+ ä½œè€…: DiamonJoy
+ ç»´æŠ¤: 2014.3.8
  */
 #include <vector>
 
 using namespace std;
 
-const int DIME_NUM = 4;        //Êı¾İÎ¬¶È£¬È«¾Ö³£Á¿
+const int DIME_NUM = 4;        //æ•°æ®ç»´åº¦ï¼Œå…¨å±€å¸¸é‡
 
-//Êı¾İµãÀàĞÍ
+//æ•°æ®ç‚¹ç±»å‹
 class DataPoint
 {
 private:
-	unsigned long dpID;                //Êı¾İµãID
-	double dimension[DIME_NUM];        //Î¬¶ÈÊı¾İ
-	long clusterId;                    //ËùÊô¾ÛÀàID
-	bool isKey;                        //ÊÇ·ñºËĞÄ¶ÔÏó
-	bool visited;                    //ÊÇ·ñÒÑ·ÃÎÊ
-	vector<unsigned long> arrivalPoints;    //ÁìÓòÊı¾İµãidÁĞ±í
+	unsigned long dpID;                //æ•°æ®ç‚¹ID
+	double dimension[DIME_NUM];        //ç»´åº¦æ•°æ®
+	long clusterId;                    //æ‰€å±èšç±»ID
+	bool isKey;                        //æ˜¯å¦æ ¸å¿ƒå¯¹è±¡
+	bool visited;                    //æ˜¯å¦å·²è®¿é—®
+	vector<unsigned long> arrivalPoints;    //é¢†åŸŸæ•°æ®ç‚¹idåˆ—è¡¨
 public:
-	DataPoint();                                                    //Ä¬ÈÏ¹¹Ôìº¯Êı
-	DataPoint(unsigned long dpID,double* dimension , bool isKey);    //¹¹Ôìº¯Êı
+	DataPoint();                                                    //é»˜è®¤æ„é€ å‡½æ•°
+	DataPoint(unsigned long dpID,double* dimension , bool isKey);    //æ„é€ å‡½æ•°
 	
-	unsigned long GetDpId();                //GetDpId·½·¨
-	void SetDpId(unsigned long dpID);        //SetDpId·½·¨
-	double* GetDimension();                    //GetDimension·½·¨
-	void SetDimension(double* dimension);    //SetDimension·½·¨
-	bool IsKey();                            //GetIsKey·½·¨
-	void SetKey(bool isKey);                //SetKey·½·¨
-	bool isVisited();                        //GetIsVisited·½·¨
-	void SetVisited(bool visited);            //SetIsVisited·½·¨
-	long GetClusterId();                    //GetClusterId·½·¨
-	void SetClusterId(long classId);        //SetClusterId·½·¨
-	vector<unsigned long>& GetArrivalPoints();    //GetArrivalPoints·½·¨
+	unsigned long GetDpId();                //GetDpIdæ–¹æ³•
+	void SetDpId(unsigned long dpID);        //SetDpIdæ–¹æ³•
+	double* GetDimension();                    //GetDimensionæ–¹æ³•
+	void SetDimension(double* dimension);    //SetDimensionæ–¹æ³•
+	bool IsKey();                            //GetIsKeyæ–¹æ³•
+	void SetKey(bool isKey);                //SetKeyæ–¹æ³•
+	bool isVisited();                        //GetIsVisitedæ–¹æ³•
+	void SetVisited(bool visited);            //SetIsVisitedæ–¹æ³•
+	long GetClusterId();                    //GetClusterIdæ–¹æ³•
+	void SetClusterId(long classId);        //SetClusterIdæ–¹æ³•
+	vector<unsigned long>& GetArrivalPoints();    //GetArrivalPointsæ–¹æ³•
 };
 
-//Ä¬ÈÏ¹¹Ôìº¯Êı
+//é»˜è®¤æ„é€ å‡½æ•°
 DataPoint::DataPoint()
 {
 }
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 DataPoint::DataPoint(unsigned long dpID,double* dimension , bool isKey):isKey(isKey),dpID(dpID)
 {
-	//´«µİÃ¿Î¬µÄÎ¬¶ÈÊı¾İ
+	//ä¼ é€’æ¯ç»´çš„ç»´åº¦æ•°æ®
 	for(int i=0; i<DIME_NUM;i++)
 	{
 		this->dimension[i]=dimension[i];
 	}
 }
 
-//ÉèÖÃÎ¬¶ÈÊı¾İ
+//è®¾ç½®ç»´åº¦æ•°æ®
 void DataPoint::SetDimension(double* dimension)
 {
 	for(int i=0; i<DIME_NUM;i++)
@@ -60,62 +59,62 @@ void DataPoint::SetDimension(double* dimension)
 	}
 }
 
-//»ñÈ¡Î¬¶ÈÊı¾İ
+//è·å–ç»´åº¦æ•°æ®
 double* DataPoint::GetDimension()
 {
 	return this->dimension;
 }
 
-//»ñÈ¡ÊÇ·ñÎªºËĞÄ¶ÔÏó
+//è·å–æ˜¯å¦ä¸ºæ ¸å¿ƒå¯¹è±¡
 bool DataPoint::IsKey()
 {
 	return this->isKey;
 }
 
-//ÉèÖÃºËĞÄ¶ÔÏó±êÖ¾
+//è®¾ç½®æ ¸å¿ƒå¯¹è±¡æ ‡å¿—
 void DataPoint::SetKey(bool isKey)
 {
 	this->isKey = isKey;
 }
 
-//»ñÈ¡DpId·½·¨
+//è·å–DpIdæ–¹æ³•
 unsigned long DataPoint::GetDpId()
 {
 	return this->dpID;
 }
 
-//ÉèÖÃDpId·½·¨
+//è®¾ç½®DpIdæ–¹æ³•
 void DataPoint::SetDpId(unsigned long dpID)
 {
 	this->dpID = dpID;
 }
 
-//GetIsVisited·½·¨
+//GetIsVisitedæ–¹æ³•
 bool DataPoint::isVisited()
 {
 	return this->visited;
 }
 
 
-//SetIsVisited·½·¨
+//SetIsVisitedæ–¹æ³•
 void DataPoint::SetVisited( bool visited )
 {
 	this->visited = visited;
 }
 
-//GetClusterId·½·¨
+//GetClusterIdæ–¹æ³•
 long DataPoint::GetClusterId()
 {
 	return this->clusterId;
 }
 
-//GetClusterId·½·¨
+//GetClusterIdæ–¹æ³•
 void DataPoint::SetClusterId( long clusterId )
 {
 	this->clusterId = clusterId;
 }
 
-//GetArrivalPoints·½·¨
+//GetArrivalPointsæ–¹æ³•
 vector<unsigned long>& DataPoint::GetArrivalPoints()
 {
 	return arrivalPoints;
