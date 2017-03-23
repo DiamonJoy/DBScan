@@ -1,7 +1,6 @@
  /*
- ×÷Õß: XuBin&&Jason
- ÓÊÏä: 190662513@qq.com
- Î¬»¤: 2014.3.8
+ ä½œè€…: DiamonJoy
+ ç»´æŠ¤: 2014.3.8
  */
 #include <iostream>
 #include <cmath>
@@ -13,142 +12,142 @@
 
 using namespace std;
 
-//¾ÛÀà·ÖÎöÀàĞÍ
+//èšç±»åˆ†æç±»å‹
 class ClusterAnalysis
 {
 private:
-	vector<DataPoint> dadaSets;        //Êı¾İ¼¯ºÏ
-	unsigned int dimNum;			//Î¬¶È
-	double radius;                    //°ë¾¶
-	unsigned int dataNum;            //Êı¾İÊıÁ¿
-	unsigned int minPTs;            //ÁÚÓò×îĞ¡Êı¾İ¸öÊı
+	vector<DataPoint> dadaSets;        //æ•°æ®é›†åˆ
+	unsigned int dimNum;			//ç»´åº¦
+	double radius;                    //åŠå¾„
+	unsigned int dataNum;            //æ•°æ®æ•°é‡
+	unsigned int minPTs;            //é‚»åŸŸæœ€å°æ•°æ®ä¸ªæ•°
 	
-	double GetDistance(DataPoint& dp1, DataPoint& dp2);                    //¾àÀëº¯Êı
-	void SetArrivalPoints(DataPoint& dp);                                //ÉèÖÃÊı¾İµãµÄÁìÓòµãÁĞ±í
-	void KeyPointCluster( unsigned long i, unsigned long clusterId );    //¶ÔÊı¾İµãÁìÓòÄÚµÄµãÖ´ĞĞ¾ÛÀà²Ù×÷
+	double GetDistance(DataPoint& dp1, DataPoint& dp2);                    //è·ç¦»å‡½æ•°
+	void SetArrivalPoints(DataPoint& dp);                                //è®¾ç½®æ•°æ®ç‚¹çš„é¢†åŸŸç‚¹åˆ—è¡¨
+	void KeyPointCluster( unsigned long i, unsigned long clusterId );    //å¯¹æ•°æ®ç‚¹é¢†åŸŸå†…çš„ç‚¹æ‰§è¡Œèšç±»æ“ä½œ
 public:
 	
-	ClusterAnalysis(){}                    //Ä¬ÈÏ¹¹Ôìº¯Êı
-	bool Init(char* fileName, double radius, int minPTs);    //³õÊ¼»¯²Ù×÷
-	bool DoDBSCANRecursive();            //DBSCANµİ¹éËã·¨
-	bool WriteToFile(char* fileName);    //½«¾ÛÀà½á¹ûĞ´ÈëÎÄ¼ş
+	ClusterAnalysis(){}                    //é»˜è®¤æ„é€ å‡½æ•°
+	bool Init(char* fileName, double radius, int minPTs);    //åˆå§‹åŒ–æ“ä½œ
+	bool DoDBSCANRecursive();            //DBSCANé€’å½’ç®—æ³•
+	bool WriteToFile(char* fileName);    //å°†èšç±»ç»“æœå†™å…¥æ–‡ä»¶
 };
 
 
 
 /*
-º¯Êı£º¾ÛÀà³õÊ¼»¯²Ù×÷
-ËµÃ÷£º½«Êı¾İÎÄ¼şÃû£¬°ë¾¶£¬ÁìÓò×îĞ¡Êı¾İ¸öÊıĞÅÏ¢Ğ´Èë¾ÛÀàËã·¨Àà£¬¶ÁÈ¡ÎÄ¼ş£¬°ÑÊı¾İĞÅÏ¢¶ÁÈëĞ´½øËã·¨ÀàÊı¾İ¼¯ºÏÖĞ
-²ÎÊı£º
-char* fileName;    //ÎÄ¼şÃû
-double radius;    //°ë¾¶
-int minPTs;        //ÁìÓò×îĞ¡Êı¾İ¸öÊı  
-·µ»ØÖµ£º true;    */
+å‡½æ•°ï¼šèšç±»åˆå§‹åŒ–æ“ä½œ
+è¯´æ˜ï¼šå°†æ•°æ®æ–‡ä»¶åï¼ŒåŠå¾„ï¼Œé¢†åŸŸæœ€å°æ•°æ®ä¸ªæ•°ä¿¡æ¯å†™å…¥èšç±»ç®—æ³•ç±»ï¼Œè¯»å–æ–‡ä»¶ï¼ŒæŠŠæ•°æ®ä¿¡æ¯è¯»å…¥å†™è¿›ç®—æ³•ç±»æ•°æ®é›†åˆä¸­
+å‚æ•°ï¼š
+char* fileName;    //æ–‡ä»¶å
+double radius;    //åŠå¾„
+int minPTs;        //é¢†åŸŸæœ€å°æ•°æ®ä¸ªæ•°  
+è¿”å›å€¼ï¼š true;    */
 bool ClusterAnalysis::Init(char* fileName, double radius, int minPTs)
 {
-	this->radius = radius;        //ÉèÖÃ°ë¾¶
-	this->minPTs = minPTs;        //ÉèÖÃÁìÓò×îĞ¡Êı¾İ¸öÊı
-	this->dimNum = DIME_NUM;    //ÉèÖÃÊı¾İÎ¬¶È
-	ifstream ifs(fileName);        //´ò¿ªÎÄ¼ş
-	if (! ifs.is_open())                //ÈôÎÄ¼şÒÑ¾­±»´ò¿ª£¬±¨´íÎóĞÅÏ¢
+	this->radius = radius;        //è®¾ç½®åŠå¾„
+	this->minPTs = minPTs;        //è®¾ç½®é¢†åŸŸæœ€å°æ•°æ®ä¸ªæ•°
+	this->dimNum = DIME_NUM;    //è®¾ç½®æ•°æ®ç»´åº¦
+	ifstream ifs(fileName);        //æ‰“å¼€æ–‡ä»¶
+	if (! ifs.is_open())                //è‹¥æ–‡ä»¶å·²ç»è¢«æ‰“å¼€ï¼ŒæŠ¥é”™è¯¯ä¿¡æ¯
 	{
-		cout << "Error opening file\n";    //Êä³ö´íÎóĞÅÏ¢
-		exit (-1);                        //³ÌĞòÍË³ö
+		cout << "Error opening file\n";    //è¾“å‡ºé”™è¯¯ä¿¡æ¯
+		exit (-1);                        //ç¨‹åºé€€å‡º
 	}
 	
-	unsigned long i=0;            //Êı¾İ¸öÊıÍ³¼Æ
-	while (! ifs.eof() )                //´ÓÎÄ¼şÖĞ¶ÁÈ¡POIĞÅÏ¢£¬½«POIĞÅÏ¢Ğ´ÈëPOIÁĞ±íÖĞ
+	unsigned long i=0;            //æ•°æ®ä¸ªæ•°ç»Ÿè®¡
+	while (! ifs.eof() )                //ä»æ–‡ä»¶ä¸­è¯»å–POIä¿¡æ¯ï¼Œå°†POIä¿¡æ¯å†™å…¥POIåˆ—è¡¨ä¸­
 	{
-		DataPoint tempDP;                //ÁÙÊ±Êı¾İµã¶ÔÏó
-		double tempDimData[DIME_NUM];    //ÁÙÊ±Êı¾İµãÎ¬¶ÈĞÅÏ¢
-		for(int j=0; j<DIME_NUM; j++)    //¶ÁÎÄ¼ş£¬¶ÁÈ¡Ã¿Ò»Î¬Êı¾İ
+		DataPoint tempDP;                //ä¸´æ—¶æ•°æ®ç‚¹å¯¹è±¡
+		double tempDimData[DIME_NUM];    //ä¸´æ—¶æ•°æ®ç‚¹ç»´åº¦ä¿¡æ¯
+		for(int j=0; j<DIME_NUM; j++)    //è¯»æ–‡ä»¶ï¼Œè¯»å–æ¯ä¸€ç»´æ•°æ®
 		{
 			ifs>>tempDimData[j];
 		}
-		tempDP.SetDimension(tempDimData);    //½«Î¬¶ÈĞÅÏ¢´æÈëÊı¾İµã¶ÔÏóÄÚ
-		tempDP.SetDpId(i);                    //½«Êı¾İµã¶ÔÏóIDÉèÖÃÎªi
-		tempDP.SetVisited(false);            //Êı¾İµã¶ÔÏóisVisitedÉèÖÃÎªfalse
-		tempDP.SetClusterId(-1);            //ÉèÖÃÄ¬ÈÏ´ØIDÎª-1
-		dadaSets.push_back(tempDP);            //½«¶ÔÏóÑ¹ÈëÊı¾İ¼¯ºÏÈİÆ÷
-		i++;        //¼ÆÊı+1
+		tempDP.SetDimension(tempDimData);    //å°†ç»´åº¦ä¿¡æ¯å­˜å…¥æ•°æ®ç‚¹å¯¹è±¡å†…
+		tempDP.SetDpId(i);                    //å°†æ•°æ®ç‚¹å¯¹è±¡IDè®¾ç½®ä¸ºi
+		tempDP.SetVisited(false);            //æ•°æ®ç‚¹å¯¹è±¡isVisitedè®¾ç½®ä¸ºfalse
+		tempDP.SetClusterId(-1);            //è®¾ç½®é»˜è®¤ç°‡IDä¸º-1
+		dadaSets.push_back(tempDP);            //å°†å¯¹è±¡å‹å…¥æ•°æ®é›†åˆå®¹å™¨
+		i++;        //è®¡æ•°+1
 	}
-	ifs.close();        //¹Ø±ÕÎÄ¼şÁ÷
-	dataNum =i;            //ÉèÖÃÊı¾İ¶ÔÏó¼¯ºÏ´óĞ¡Îªi
+	ifs.close();        //å…³é—­æ–‡ä»¶æµ
+	dataNum =i;            //è®¾ç½®æ•°æ®å¯¹è±¡é›†åˆå¤§å°ä¸ºi
 	for(unsigned long k=0; k<dataNum;k++)
 	{
-		SetArrivalPoints(dadaSets[k]);            //¼ÆËãÊı¾İµãÁìÓòÄÚ¶ÔÏó
+		SetArrivalPoints(dadaSets[k]);            //è®¡ç®—æ•°æ®ç‚¹é¢†åŸŸå†…å¯¹è±¡
 	}
-	return true;    //·µ»Ø
+	return true;    //è¿”å›
 }
 
 /*
-º¯Êı£º½«ÒÑ¾­¹ı¾ÛÀàËã·¨´¦ÀíµÄÊı¾İ¼¯ºÏĞ´»ØÎÄ¼ş
-ËµÃ÷£º½«ÒÑ¾­¹ı¾ÛÀà½á¹ûĞ´»ØÎÄ¼ş
-²ÎÊı£º
-char* fileName;    //ÒªĞ´ÈëµÄÎÄ¼şÃû
-·µ»ØÖµ£º true    */
+å‡½æ•°ï¼šå°†å·²ç»è¿‡èšç±»ç®—æ³•å¤„ç†çš„æ•°æ®é›†åˆå†™å›æ–‡ä»¶
+è¯´æ˜ï¼šå°†å·²ç»è¿‡èšç±»ç»“æœå†™å›æ–‡ä»¶
+å‚æ•°ï¼š
+char* fileName;    //è¦å†™å…¥çš„æ–‡ä»¶å
+è¿”å›å€¼ï¼š true    */
 bool ClusterAnalysis::WriteToFile(char* fileName )
 {
-	ofstream of1(fileName);//³õÊ¼»¯ÎÄ¼şÊä³öÁ÷
-	for(int d=1; d<=DIME_NUM ; d++)						//½«Î¬¶ÈĞÅÏ¢Ğ´ÈëÎÄ¼ş
+	ofstream of1(fileName);//åˆå§‹åŒ–æ–‡ä»¶è¾“å‡ºæµ
+	for(int d=1; d<=DIME_NUM ; d++)						//å°†ç»´åº¦ä¿¡æ¯å†™å…¥æ–‡ä»¶
 	{
-		of1<<"Êı¾İ"<<d<<'\t';
-		if (d==DIME_NUM) of1<<"ËùÊô´ØID"<<'\t'<<endl;
+		of1<<"æ•°æ®"<<d<<'\t';
+		if (d==DIME_NUM) of1<<"æ‰€å±ç°‡ID"<<'\t'<<endl;
 	}
-	for(unsigned long i=0; i<dataNum;i++)                //¶Ô´¦Àí¹ıµÄÃ¿¸öÊı¾İµãĞ´ÈëÎÄ¼ş
+	for(unsigned long i=0; i<dataNum;i++)                //å¯¹å¤„ç†è¿‡çš„æ¯ä¸ªæ•°æ®ç‚¹å†™å…¥æ–‡ä»¶
 	{
-		for(int d=0; d<DIME_NUM ; d++)                    //½«Î¬¶ÈĞÅÏ¢Ğ´ÈëÎÄ¼ş
+		for(int d=0; d<DIME_NUM ; d++)                    //å°†ç»´åº¦ä¿¡æ¯å†™å…¥æ–‡ä»¶
 			of1<<dadaSets[i].GetDimension()[d]<<'\t';
-		if(dadaSets[i].GetClusterId() != -1) of1 << dadaSets[i].GetClusterId() <<endl;        //½«ËùÊô´ØIDĞ´ÈëÎÄ¼ş
-		else of1 <<"ÔëÉùµã"<<endl;
+		if(dadaSets[i].GetClusterId() != -1) of1 << dadaSets[i].GetClusterId() <<endl;        //å°†æ‰€å±ç°‡IDå†™å…¥æ–‡ä»¶
+		else of1 <<"å™ªå£°ç‚¹"<<endl;
 	}
-	of1.close();    //¹Ø±ÕÊä³öÎÄ¼şÁ÷
-	return true;    //·µ»Ø
+	of1.close();    //å…³é—­è¾“å‡ºæ–‡ä»¶æµ
+	return true;    //è¿”å›
 }
 
 /*
-º¯Êı£ºÉèÖÃÊı¾İµãµÄÁìÓòµãÁĞ±í
-ËµÃ÷£ºÉèÖÃÊı¾İµãµÄÁìÓòµãÁĞ±í
-²ÎÊı£º
-·µ»ØÖµ£º true;    */
+å‡½æ•°ï¼šè®¾ç½®æ•°æ®ç‚¹çš„é¢†åŸŸç‚¹åˆ—è¡¨
+è¯´æ˜ï¼šè®¾ç½®æ•°æ®ç‚¹çš„é¢†åŸŸç‚¹åˆ—è¡¨
+å‚æ•°ï¼š
+è¿”å›å€¼ï¼š true;    */
 void ClusterAnalysis::SetArrivalPoints(DataPoint& dp)
 {
-	for(unsigned long i=0; i<dataNum; i++)                //¶ÔÃ¿¸öÊı¾İµãÖ´ĞĞ
+	for(unsigned long i=0; i<dataNum; i++)                //å¯¹æ¯ä¸ªæ•°æ®ç‚¹æ‰§è¡Œ
 	{
-		double distance =GetDistance(dadaSets[i], dp);//»ñÈ¡ÓëÌØ¶¨µãÖ®¼äµÄ¾àÀë
+		double distance =GetDistance(dadaSets[i], dp);//è·å–ä¸ç‰¹å®šç‚¹ä¹‹é—´çš„è·ç¦»
 		//cout << dp.GetDpId()<<"to"<<i<<"is"<<distance<< endl;
-		if(distance <= radius && i!=dp.GetDpId())        //Èô¾àÀëĞ¡ÓÚ°ë¾¶£¬²¢ÇÒÌØ¶¨µãµÄidÓëdpµÄid²»Í¬Ö´ĞĞ
-			dp.GetArrivalPoints().push_back(i);            //½«ÌØ¶¨µãidÑ¹Á¦dpµÄÁìÓòÁĞ±íÖĞ
+		if(distance <= radius && i!=dp.GetDpId())        //è‹¥è·ç¦»å°äºåŠå¾„ï¼Œå¹¶ä¸”ç‰¹å®šç‚¹çš„idä¸dpçš„idä¸åŒæ‰§è¡Œ
+			dp.GetArrivalPoints().push_back(i);            //å°†ç‰¹å®šç‚¹idå‹åŠ›dpçš„é¢†åŸŸåˆ—è¡¨ä¸­
 	}
-	if(dp.GetArrivalPoints().size() >= minPTs)            //ÈôdpÁìÓòÄÚÊı¾İµãÊı¾İÁ¿> minPTsÖ´ĞĞ
+	if(dp.GetArrivalPoints().size() >= minPTs)            //è‹¥dpé¢†åŸŸå†…æ•°æ®ç‚¹æ•°æ®é‡> minPTsæ‰§è¡Œ
 	{
-		dp.SetKey(true);    //½«dpºËĞÄ¶ÔÏó±êÖ¾Î»ÉèÎªtrue
-		return;                //·µ»Ø
+		dp.SetKey(true);    //å°†dpæ ¸å¿ƒå¯¹è±¡æ ‡å¿—ä½è®¾ä¸ºtrue
+		return;                //è¿”å›
 	}
-	dp.SetKey(false);    //Èô·ÇºËĞÄ¶ÔÏó£¬Ôò½«dpºËĞÄ¶ÔÏó±êÖ¾Î»ÉèÎªfalse
+	dp.SetKey(false);    //è‹¥éæ ¸å¿ƒå¯¹è±¡ï¼Œåˆ™å°†dpæ ¸å¿ƒå¯¹è±¡æ ‡å¿—ä½è®¾ä¸ºfalse
 }
 
 
 /*
-º¯Êı£ºÖ´ĞĞ¾ÛÀà²Ù×÷
-ËµÃ÷£ºÖ´ĞĞ¾ÛÀà²Ù×÷
-²ÎÊı£º
-·µ»ØÖµ£º true;    */
+å‡½æ•°ï¼šæ‰§è¡Œèšç±»æ“ä½œ
+è¯´æ˜ï¼šæ‰§è¡Œèšç±»æ“ä½œ
+å‚æ•°ï¼š
+è¿”å›å€¼ï¼š true;    */
 bool ClusterAnalysis::DoDBSCANRecursive()
 {
-	unsigned long clusterId=0, k = 0;                        //¾ÛÀàid¼ÆÊı£¬³õÊ¼»¯Îª0
-	for(unsigned long i=0; i<dataNum;i++)            //¶ÔÃ¿Ò»¸öÊı¾İµãÖ´ĞĞ
+	unsigned long clusterId=0, k = 0;                        //èšç±»idè®¡æ•°ï¼Œåˆå§‹åŒ–ä¸º0
+	for(unsigned long i=0; i<dataNum;i++)            //å¯¹æ¯ä¸€ä¸ªæ•°æ®ç‚¹æ‰§è¡Œ
 	{
-		DataPoint& dp=dadaSets[i];                    //È¡µ½µÚi¸öÊı¾İµã¶ÔÏó
-		if(!dp.isVisited() && dp.IsKey())            //Èô¶ÔÏóÃ»±»·ÃÎÊ¹ı£¬²¢ÇÒÊÇºËĞÄ¶ÔÏóÖ´ĞĞ
+		DataPoint& dp=dadaSets[i];                    //å–åˆ°ç¬¬iä¸ªæ•°æ®ç‚¹å¯¹è±¡
+		if(!dp.isVisited() && dp.IsKey())            //è‹¥å¯¹è±¡æ²¡è¢«è®¿é—®è¿‡ï¼Œå¹¶ä¸”æ˜¯æ ¸å¿ƒå¯¹è±¡æ‰§è¡Œ
 		{
-			dp.SetClusterId(clusterId);                //ÉèÖÃ¸Ã¶ÔÏóËùÊô´ØIDÎªclusterId
-			dp.SetVisited(true);                    //ÉèÖÃ¸Ã¶ÔÏóÒÑ±»·ÃÎÊ¹ı
-			KeyPointCluster(i,clusterId);            //¶Ô¸Ã¶ÔÏóÁìÓòÄÚµã½øĞĞ¾ÛÀà
-			clusterId++;                            //clusterId×ÔÔö1
+			dp.SetClusterId(clusterId);                //è®¾ç½®è¯¥å¯¹è±¡æ‰€å±ç°‡IDä¸ºclusterId
+			dp.SetVisited(true);                    //è®¾ç½®è¯¥å¯¹è±¡å·²è¢«è®¿é—®è¿‡
+			KeyPointCluster(i,clusterId);            //å¯¹è¯¥å¯¹è±¡é¢†åŸŸå†…ç‚¹è¿›è¡Œèšç±»
+			clusterId++;                            //clusterIdè‡ªå¢1
 		}
 		/*if(!dp.IsKey()) {
-			cout <<"ÔëÉùµã"<<i<< endl;
+			cout <<"å™ªå£°ç‚¹"<<i<< endl;
 			k++;
 		}*/
 	}
@@ -156,63 +155,63 @@ bool ClusterAnalysis::DoDBSCANRecursive()
 	{
 		DataPoint& dptemp=dadaSets[j];
 		if(dptemp.GetClusterId()!=-1) 
-			cout << "Êı¾İµã"<< dptemp.GetDpId()<< " ¾ÛÀàIDÎª"<< dptemp.GetClusterId() << endl;
+			cout << "æ•°æ®ç‚¹"<< dptemp.GetDpId()<< " èšç±»IDä¸º"<< dptemp.GetClusterId() << endl;
 		else 
 		{
-			cout <<"ÔëÉùµã"<<j<< endl;
+			cout <<"å™ªå£°ç‚¹"<<j<< endl;
 			k++;
 		}
 	}
 
-	cout <<"\n¹²¾ÛÀà" <<clusterId<<"¸ö"<< endl;       //Ëã·¨Íê³Éºó£¬Êä³ö¾ÛÀà¸öÊı    
-    cout <<"ÔëÉùµã" <<k<<"¸ö"<< endl; 
-	return true;    //·µ»Ø
+	cout <<"\nå…±èšç±»" <<clusterId<<"ä¸ª"<< endl;       //ç®—æ³•å®Œæˆåï¼Œè¾“å‡ºèšç±»ä¸ªæ•°    
+    cout <<"å™ªå£°ç‚¹" <<k<<"ä¸ª"<< endl; 
+	return true;    //è¿”å›
 }
 
 /*
-º¯Êı£º¶ÔÊı¾İµãÁìÓòÄÚµÄµãÖ´ĞĞ¾ÛÀà²Ù×÷
-ËµÃ÷£º²ÉÓÃµİ¹éµÄ·½·¨£¬Éî¶ÈÓÅÏÈ¾ÛÀàÊı¾İ
-²ÎÊı£º
-unsigned long dpID;            //Êı¾İµãid
-unsigned long clusterId;    //Êı¾İµãËùÊô´Øid
-·µ»ØÖµ£º void;    */
+å‡½æ•°ï¼šå¯¹æ•°æ®ç‚¹é¢†åŸŸå†…çš„ç‚¹æ‰§è¡Œèšç±»æ“ä½œ
+è¯´æ˜ï¼šé‡‡ç”¨é€’å½’çš„æ–¹æ³•ï¼Œæ·±åº¦ä¼˜å…ˆèšç±»æ•°æ®
+å‚æ•°ï¼š
+unsigned long dpID;            //æ•°æ®ç‚¹id
+unsigned long clusterId;    //æ•°æ®ç‚¹æ‰€å±ç°‡id
+è¿”å›å€¼ï¼š void;    */
 void ClusterAnalysis::KeyPointCluster(unsigned long dpID, unsigned long clusterId )
 {
-	DataPoint& srcDp = dadaSets[dpID];        //»ñÈ¡Êı¾İµã¶ÔÏó
+	DataPoint& srcDp = dadaSets[dpID];        //è·å–æ•°æ®ç‚¹å¯¹è±¡
 	if(!srcDp.IsKey())    return;
-	vector<unsigned long>& arrvalPoints = srcDp.GetArrivalPoints();        //»ñÈ¡¶ÔÏóÁìÓòÄÚµãIDÁĞ±í
+	vector<unsigned long>& arrvalPoints = srcDp.GetArrivalPoints();        //è·å–å¯¹è±¡é¢†åŸŸå†…ç‚¹IDåˆ—è¡¨
 	for(unsigned long i=0; i<arrvalPoints.size(); i++)
 	{
-		DataPoint& desDp = dadaSets[arrvalPoints[i]];    //»ñÈ¡ÁìÓòÄÚµãÊı¾İµã
-		if(!desDp.isVisited())                            //Èô¸Ã¶ÔÏóÃ»ÓĞ±»·ÃÎÊ¹ıÖ´ĞĞ
+		DataPoint& desDp = dadaSets[arrvalPoints[i]];    //è·å–é¢†åŸŸå†…ç‚¹æ•°æ®ç‚¹
+		if(!desDp.isVisited())                            //è‹¥è¯¥å¯¹è±¡æ²¡æœ‰è¢«è®¿é—®è¿‡æ‰§è¡Œ
 		{
-			//cout << "Êı¾İµã"<< desDp.GetDpId()<<" ¾ÛÀàIDÎª" <<clusterId << endl;
-			desDp.SetClusterId(clusterId);        //ÉèÖÃ¸Ã¶ÔÏóËùÊô´ØµÄIDÎªclusterId£¬¼´½«¸Ã¶ÔÏóÎüÈë´ØÖĞ
-			desDp.SetVisited(true);                //ÉèÖÃ¸Ã¶ÔÏóÒÑ±»·ÃÎÊ
-			if(desDp.IsKey())                    //Èô¸Ã¶ÔÏóÊÇºËĞÄ¶ÔÏó
+			//cout << "æ•°æ®ç‚¹"<< desDp.GetDpId()<<" èšç±»IDä¸º" <<clusterId << endl;
+			desDp.SetClusterId(clusterId);        //è®¾ç½®è¯¥å¯¹è±¡æ‰€å±ç°‡çš„IDä¸ºclusterIdï¼Œå³å°†è¯¥å¯¹è±¡å¸å…¥ç°‡ä¸­
+			desDp.SetVisited(true);                //è®¾ç½®è¯¥å¯¹è±¡å·²è¢«è®¿é—®
+			if(desDp.IsKey())                    //è‹¥è¯¥å¯¹è±¡æ˜¯æ ¸å¿ƒå¯¹è±¡
 			{
-				KeyPointCluster(desDp.GetDpId(),clusterId);    //µİ¹éµØ¶Ô¸ÃÁìÓòµãÊı¾İµÄÁìÓòÄÚµÄµãÖ´ĞĞ¾ÛÀà²Ù×÷£¬²ÉÓÃÉî¶ÈÓÅÏÈ·½·¨
+				KeyPointCluster(desDp.GetDpId(),clusterId);    //é€’å½’åœ°å¯¹è¯¥é¢†åŸŸç‚¹æ•°æ®çš„é¢†åŸŸå†…çš„ç‚¹æ‰§è¡Œèšç±»æ“ä½œï¼Œé‡‡ç”¨æ·±åº¦ä¼˜å…ˆæ–¹æ³•
 			}
 		}
 	}
 }
 
-//Á½Êı¾İµãÖ®¼ä¾àÀë
+//ä¸¤æ•°æ®ç‚¹ä¹‹é—´è·ç¦»
 /*
-º¯Êı£º»ñÈ¡Á½Êı¾İµãÖ®¼ä¾àÀë
-ËµÃ÷£º»ñÈ¡Á½Êı¾İµãÖ®¼äµÄÅ·Ê½¾àÀë
-²ÎÊı£º
-DataPoint& dp1;        //Êı¾İµã1
-DataPoint& dp2;        //Êı¾İµã2
-·µ»ØÖµ£º double;    //Á½µãÖ®¼äµÄ¾àÀë        */
+å‡½æ•°ï¼šè·å–ä¸¤æ•°æ®ç‚¹ä¹‹é—´è·ç¦»
+è¯´æ˜ï¼šè·å–ä¸¤æ•°æ®ç‚¹ä¹‹é—´çš„æ¬§å¼è·ç¦»
+å‚æ•°ï¼š
+DataPoint& dp1;        //æ•°æ®ç‚¹1
+DataPoint& dp2;        //æ•°æ®ç‚¹2
+è¿”å›å€¼ï¼š double;    //ä¸¤ç‚¹ä¹‹é—´çš„è·ç¦»        */
 double ClusterAnalysis::GetDistance(DataPoint& dp1, DataPoint& dp2)
 {
-	double distance =0;        //³õÊ¼»¯¾àÀëÎª0
-	for(int i=0; i<DIME_NUM;i++)    //¶ÔÊı¾İÃ¿Ò»Î¬Êı¾İÖ´ĞĞ
+	double distance =0;        //åˆå§‹åŒ–è·ç¦»ä¸º0
+	for(int i=0; i<DIME_NUM;i++)    //å¯¹æ•°æ®æ¯ä¸€ç»´æ•°æ®æ‰§è¡Œ
 	{
-		distance += pow(dp1.GetDimension()[i] - dp2.GetDimension()[i],2);    //¾àÀë+Ã¿Ò»Î¬²îµÄÆ½·½
+		distance += pow(dp1.GetDimension()[i] - dp2.GetDimension()[i],2);    //è·ç¦»+æ¯ä¸€ç»´å·®çš„å¹³æ–¹
 	}
-	return pow(distance,0.5);        //¿ª·½²¢·µ»Ø¾àÀë
+	return pow(distance,0.5);        //å¼€æ–¹å¹¶è¿”å›è·ç¦»
 }
 
 
