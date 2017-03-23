@@ -1,7 +1,6 @@
  /*
- ×÷Õß: XuBin&&Jason
- ÓÊÏä: 190662513@qq.com
- Î¬»¤: 2014.3.8
+ ä½œè€…: DiamonJoy
+ ç»´æŠ¤: 2014.3.8
  */
 
 #include "ClusterAnalysis.h"
@@ -15,18 +14,18 @@ int main()
 	char datafile[50], resultfile[50];
 	double radius;
 	int minPTs;
-	cout<<"ÊäÈë°ë¾¶radius:"; cin>>radius;
-	cout<<"ÊäÈëÁìÓòÄÚ×îĞ¡Êı¾İµã¸öÊıminPTs:"; cin>>minPTs;
-	cout<<"Çë½«Êı¾İÑù±¾ÎÄ¼ş×ª»»³É.txtÎÄ¼ş\nÊäÈëÑù±¾ÎÄ¼şµØÖ·:\nÀıÈçC:\\Users\\XuBin&&Jason\\Desktop\\data.txt"<< endl;
+	cout<<"è¾“å…¥åŠå¾„radius:"; cin>>radius;
+	cout<<"è¾“å…¥é¢†åŸŸå†…æœ€å°æ•°æ®ç‚¹ä¸ªæ•°minPTs:"; cin>>minPTs;
+	cout<<"è¯·å°†æ•°æ®æ ·æœ¬æ–‡ä»¶è½¬æ¢æˆ.txtæ–‡ä»¶\nè¾“å…¥æ ·æœ¬æ–‡ä»¶åœ°å€:\nä¾‹å¦‚C:\\Users\\Desktop\\data.txt"<< endl;
 	cin>>datafile;
-	ClusterAnalysis myClusterAnalysis;                        //¾ÛÀàËã·¨¶ÔÏóÉùÃ÷
-	myClusterAnalysis.Init(datafile,radius,minPTs);			  //Ö¸¶¨°ë¾¶ºÍÁìÓòÄÚ×îĞ¡Êı¾İµã¸öÊı
-	myClusterAnalysis.DoDBSCANRecursive();                    //Ö´ĞĞ¾ÛÀàËã·¨
-	cout<<"\nÊäÈë½á¹ûÎÄ¼ş´¢´æµØÖ·\nÀıÈçC:\\Users\\XuBin&&Jason\\Desktop\\redata.txt£©,ÔÙ×ÔĞĞ½«.txtÎÄ¼ş×ª»¯³ÉÑù±¾ÎÄ¼ş:"<< endl;
+	ClusterAnalysis myClusterAnalysis;                        //èšç±»ç®—æ³•å¯¹è±¡å£°æ˜
+	myClusterAnalysis.Init(datafile,radius,minPTs);		  //æŒ‡å®šåŠå¾„å’Œé¢†åŸŸå†…æœ€å°æ•°æ®ç‚¹ä¸ªæ•°
+	myClusterAnalysis.DoDBSCANRecursive();                    //æ‰§è¡Œèšç±»ç®—æ³•
+	cout<<"\nè¾“å…¥ç»“æœæ–‡ä»¶å‚¨å­˜åœ°å€\nä¾‹å¦‚C:\\Users\\Desktop\\redata.txtï¼‰,å†è‡ªè¡Œå°†.txtæ–‡ä»¶è½¬åŒ–æˆæ ·æœ¬æ–‡ä»¶:"<< endl;
 	cin>>resultfile;
-	myClusterAnalysis.WriteToFile(resultfile);//Ğ´Ö´ĞĞºóµÄ½á¹ûĞ´ÈëÎÄ¼ş
-	cout<<"Ğ´Èë³É¹¦"<< endl;
+	myClusterAnalysis.WriteToFile(resultfile); //å†™æ‰§è¡Œåçš„ç»“æœå†™å…¥æ–‡ä»¶
+	cout<<"å†™å…¥æˆåŠŸ"<< endl;
 	
-	system("pause");    //ÏÔÊ¾½á¹û
-	return 0;            //·µ»Ø
+	system("pause");    //æ˜¾ç¤ºç»“æœ
+	return 0;           //è¿”å›
 }
